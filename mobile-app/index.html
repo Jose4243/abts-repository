@@ -3,34 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kensington Mobile Library</title>
+  <title>Kensington Mobile Library - Home</title>
   <link rel="stylesheet" href="../css/mobile.css">
 </head>
 <body>
-  <header class="mobile-header">
-    <h2>Welcome back, Jane!</h2>
-    <p>Member ID: M-1001</p>
+  <!-- Greeting Banner -->
+  <header class="greeting-banner">
+    <h2>Hello, Jane Doe 👋</h2>
+    <p>Member ID: M-1001 | Kensington Branch</p>
   </header>
 
   <main class="mobile-content">
-    <section class="card">
-      <h3>Active Borrowed Books</h3>
-      <div class="loan-item">
-        <h4>1984 - George Orwell</h4>
-        <p>ISBN: 9780141187761</p>
-        <p class="due-text">Due: Today (Sep 3, 2026)</p>
+    <!-- Quick Search Bar -->
+    <section class="search-section">
+      <div class="quick-search">
+        <input type="text" placeholder="🔍 Quick search catalog by title, author, or ISBN..." aria-label="Search catalog">
       </div>
     </section>
 
-    <section class="card alert-card">
-      <h3>Outstanding Liabilities</h3>
-      <p>Fine Balance: <strong>$0.00</strong></p>
+    <!-- Active Borrowed Books Carousel -->
+    <section class="section-block">
+      <h3>Active Borrowed Books</h3>
+      <div class="carousel-container">
+        <!-- Card 1 -->
+        <article class="carousel-card">
+          <h4>1984</h4>
+          <p class="author">George Orwell</p>
+          <p class="due-info">Due in 2 Days (Sep 5, 2026)</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar warning" style="width: 85%;"></div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="carousel-card">
+          <h4>To Kill a Mockingbird</h4>
+          <p class="author">Harper Lee</p>
+          <p class="due-info">Due in 10 Days (Sep 13, 2026)</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar safe" style="width: 30%;"></div>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 
+  <!-- Persistent 4-Item Bottom Navigation Bar -->
   <nav class="bottom-nav">
-    <a href="index.html" class="nav-item active">Home</a>
-    <a href="digital-id.html" class="nav-item">Digital ID</a>
+    <a href="index.html" class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="#search" class="nav-item">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Search</span>
+    </a>
+    <a href="digital-id.html" class="nav-item">
+      <span class="nav-icon">🪪</span>
+      <span class="nav-label">Digital ID</span>
+    </a>
+    <a href="#profile" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </a>
   </nav>
 </body>
 </html>

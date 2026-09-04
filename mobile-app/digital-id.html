@@ -3,29 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digital Member Card</title>
+  <title>Kensington Mobile Library - Digital ID</title>
   <link rel="stylesheet" href="../css/mobile.css">
 </head>
 <body>
-  <main class="mobile-content center-content">
-    <section class="id-card">
-      <header class="id-card-header">
-        <h3>Kensington Public Library</h3>
-        <span class="card-type">Digital Member Pass</span>
+  <main class="mobile-content center-wrapper">
+    <!-- Centered Card Presentation for Handheld Scanning -->
+    <section class="digital-id-card">
+      <header class="id-header">
+        <h3>KENSINGTON COMMUNITY LIBRARY</h3>
+        <span class="pass-badge">OFFICIAL MEMBER PASS</span>
       </header>
-      <div class="id-card-body">
-        <h2>Jane Doe</h2>
-        <p>Member ID: M-1001</p>
-        <div class="qr-placeholder">
-          <div class="mock-qr">[ M-1001 SCAN BARCODE ]</div>
+
+      <div class="id-body">
+        <!-- Photo Placeholder -->
+        <div class="photo-placeholder">
+          <span class="photo-icon">👤</span>
+          <span class="photo-text">PHOTO</span>
+        </div>
+
+        <!-- Member Details -->
+        <div class="member-details">
+          <h2>Jane Doe</h2>
+          <p class="id-number"><strong>ID:</strong> M-1001-2026</p>
+          <p class="member-status">STATUS: ACTIVE</p>
         </div>
       </div>
+
+      <!-- Dynamically Generated QR Barcode Block -->
+      <footer class="qr-container">
+        <div class="mock-qr-code">
+          <div class="qr-grid"></div>
+          <p class="qr-label">||||| | |||| ||| ||||| |||</p>
+          <span class="scan-hint">Scan at Desk Barcode Reader</span>
+        </div>
+      </footer>
     </section>
   </main>
 
+  <!-- Persistent 4-Item Bottom Navigation Bar -->
   <nav class="bottom-nav">
-    <a href="index.html" class="nav-item">Home</a>
-    <a href="digital-id.html" class="nav-item active">Digital ID</a>
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="#search" class="nav-item">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Search</span>
+    </a>
+    <a href="digital-id.html" class="nav-item active">
+      <span class="nav-icon">🪪</span>
+      <span class="nav-label">Digital ID</span>
+    </a>
+    <a href="#profile" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </a>
   </nav>
 </body>
 </html>

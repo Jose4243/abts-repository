@@ -6,70 +6,227 @@
 }
 
 body {
-  background-color: #f0f2f5;
-  padding-bottom: 70px;
+  background-color: #f4f6f9;
+  padding-bottom: 75px;
+  color: #2c3e50;
 }
 
-.mobile-header {
-  background-color: #2b580c;
-  color: #fff;
-  padding: 1.5rem 1rem;
+/* Greeting Banner */
+.greeting-banner {
+  background: linear-gradient(135deg, #1b3a4b 0%, #065a82 100%);
+  color: #ffffff;
+  padding: 1.5rem 1.25rem;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.greeting-banner h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.greeting-banner p {
+  font-size: 0.85rem;
+  opacity: 0.85;
 }
 
 .mobile-content {
+  padding: 1.25rem;
+}
+
+/* Quick Search Bar */
+.search-section {
+  margin-bottom: 1.5rem;
+}
+
+.quick-search input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #dcdfe6;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+/* Carousel Section */
+.section-block h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.carousel-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+}
+
+.carousel-card {
+  min-width: 240px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  scroll-snap-align: start;
+}
+
+.carousel-card h4 {
+  font-size: 1rem;
+  color: #1b3a4b;
+}
+
+.carousel-card .author {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-bottom: 0.75rem;
+}
+
+.carousel-card .due-info {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.progress-bar.warning { background-color: #e67e22; }
+.progress-bar.safe { background-color: #27ae60; }
+
+/* Centered Digital ID Card */
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px);
+}
+
+.digital-id-card {
+  width: 100%;
+  max-width: 340px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  border: 2px solid #1b3a4b;
+  overflow: hidden;
+  text-align: center;
+}
+
+.id-header {
+  background: #1b3a4b;
+  color: #ffffff;
   padding: 1rem;
 }
 
-.card {
-  background: #fff;
+.id-header h3 {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.pass-badge {
+  font-size: 0.7rem;
+  background: #27ae60;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.id-body {
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.photo-placeholder {
+  width: 80px;
+  height: 90px;
+  background: #e2e8f0;
+  border: 2px dashed #94a3b8;
   border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #64748b;
 }
 
+.photo-icon { font-size: 1.5rem; }
+.photo-text { font-size: 0.65rem; font-weight: bold; margin-top: 2px; }
+
+.member-details h2 { font-size: 1.2rem; color: #1b3a4b; }
+.id-number { font-size: 0.85rem; margin-top: 4px; }
+.member-status { font-size: 0.75rem; color: #27ae60; font-weight: bold; margin-top: 4px; }
+
+.qr-container {
+  background: #f8fafc;
+  padding: 1rem;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.mock-qr-code {
+  background: #ffffff;
+  border: 2px solid #000;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.qr-label {
+  font-family: monospace;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.scan-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* Persistent Bottom Nav Bar */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: #fff;
+  height: 65px;
+  background: #ffffff;
   display: flex;
-  border-top: 1px solid #ddd;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  z-index: 1000;
 }
 
 .nav-item {
-  flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   text-decoration: none;
-  color: #666;
-  font-weight: 600;
+  color: #64748b;
+  font-size: 0.75rem;
 }
+
+.nav-icon { font-size: 1.2rem; }
 
 .nav-item.active {
-  color: #2b580c;
-  border-top: 3px solid #2b580c;
-}
-
-/* Digital ID Card Styling */
-.id-card {
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  color: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.mock-qr {
-  background: #fff;
-  color: #000;
-  padding: 2rem 1rem;
-  margin-top: 1.5rem;
-  border-radius: 6px;
-  font-family: monospace;
+  color: #065a82;
   font-weight: bold;
 }
