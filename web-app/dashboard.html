@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABTS - Staff Dashboard</title>
+  <link rel="stylesheet" href="../css/desktop.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Oakridge Library ABTS</h1>
+    <div class="user-profile">
+      <span>Staff ID: ST-1002</span>
+      <a href="index.html" class="logout-btn">Logout</a>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="loans.html">Loan Desk</a></li>
+        <li><a href="reports.html">Reports & Fines</a></li>
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <section class="metrics-grid">
+        <article class="metric-card">
+          <h3>Total Inventory</h3>
+          <p class="metric-number">4,250</p>
+        </article>
+        <article class="metric-card">
+          <h3>Active Loans</h3>
+          <p class="metric-number">184</p>
+        </article>
+        <article class="metric-card alert">
+          <h3>Overdue Items</h3>
+          <p class="metric-number">12</p>
+        </article>
+      </section>
+
+      <section class="table-section">
+        <h2>Recent Circulation Activity</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Member Name</th>
+              <th>Book ISBN</th>
+              <th>Date Borrowed</th>
+              <th>Due Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>L-5001</td>
+              <td>Jane Doe</td>
+              <td>9780141187761</td>
+              <td>2026-08-20</td>
+              <td>2026-09-03</td>
+              <td><span class="badge status-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>L-5002</td>
+              <td>John Smith</td>
+              <td>9780747532699</td>
+              <td>2026-08-10</td>
+              <td>2026-08-24</td>
+              <td><span class="badge status-overdue">Overdue</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <footer class="app-footer">
+    <p>&copy; 2026 Oakridge Community Library - Automated Book Tracking System</p>
+  </footer>
+</body>
+</html>
