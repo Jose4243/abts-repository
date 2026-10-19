@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kensington Mobile Library - Search Catalog</title>
+  <link rel="stylesheet" href="../css/mobile.css">
+  
+  <script>
+    if (localStorage.getItem('abts_authenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body>
+  <!-- Header Banner -->
+  <header class="greeting-banner">
+    <h2>Library Catalog 🔍</h2>
+    <p>Search books, authors, and availability</p>
+  </header>
+
+  <main class="mobile-content">
+    <!-- Search Input Bar -->
+    <section class="search-section">
+      <div class="quick-search">
+        <input type="text" id="catalogInput" placeholder="Type title or author (e.g. Orwell)..." onkeyup="filterBooks()" aria-label="Search library catalog">
+      </div>
+    </section>
+
+    <!-- Search Results List -->
+    <section class="section-block">
+      <h3>Catalog Results</h3>
+      <div id="resultsContainer" style="display: flex; flex-direction: column; gap: 10px;">
+        
+        <article class="carousel-card" style="min-width: 100%;">
+          <h4>1984</h4>
+          <p class="author">George Orwell • Fiction</p>
+          <p class="due-info" style="color: #27ae60;">Status: Available for Borrowing</p>
+        </article>
+
+        <article class="carousel-card" style="min-width: 100%;">
+          <h4>To Kill a Mockingbird</h4>
+          <p class="author">Harper Lee • Classic</p>
+          <p class="due-info" style="color: #e67e22;">Status: Currently Borrowed</p>
+        </article>
+
+        <article class="carousel-card" style="min-width: 100%;">
+          <h4>The Great Gatsby</h4>
+          <p class="author">F. Scott Fitzgerald • Fiction</p>
+          <p class="due-info" style="color: #27ae60;">Status: Available for Borrowing</p>
+        </article>
+
+        <article class="carousel-card" style="min-width: 100%;">
+          <h4>Pride and Prejudice</h4>
+          <p class="author">Jane Austen • Romance</p>
+          <p class="due-info" style="color: #27ae60;">Status: Available for Borrowing</p>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Persistent 4-Item Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="search.html" class="nav-item active">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Search</span>
+    </a>
+    <a href="digital-id.html" class="nav-item">
+      <span class="nav-icon">🪪</span>
+      <span class="nav-label">Digital ID</span>
+    </a>
+    <a href="settings.html" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Settings</span>
+    </a>
+  </nav>
+
+  <script>
+    // Live filter search function
+    function filterBooks() {
+      const query = document.getElementById('catalogInput').value.toLowerCase();
+      const cards = document.querySelectorAll('#resultsContainer .carousel-card');
+
+      cards.forEach(card => {
+        const title = card.querySelector('h4').textContent.toLowerCase();
+        const author = card.querySelector('.author').textContent.toLowerCase();
+        if (title.includes(query) || author.includes(query)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    // Apply Dark Mode if active
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem('abts_theme') === 'dark') {
+        document.body.style.backgroundColor = "#0f172a";
+        document.body.style.color = "#f8fafc";
+        
+        const header = document.querySelector('.greeting-banner');
+        if (header) header.style.backgroundColor = "#1e293b";
+
+        const input = document.getElementById('catalogInput');
+        if (input) {
+          input.style.backgroundColor = "#1e293b";
+          input.style.color = "#f8fafc";
+          input.style.borderColor = "#334155";
+        }
+
+        const cards = document.querySelectorAll('.carousel-card');
+        cards.forEach(card => {
+          card.style.backgroundColor = "#1e293b";
+          card.style.color = "#f8fafc";
+          card.style.borderColor = "#334155";
+        });
+
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+          nav.style.backgroundColor = "#1e293b";
+          nav.style.borderColor = "#334155";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
