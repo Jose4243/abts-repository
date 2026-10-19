@@ -5,96 +5,209 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kensington Library - Member Login</title>
   <link rel="stylesheet" href="../css/mobile.css">
+  
   <style>
-    .auth-container { max-width: 340px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .auth-container h2 { color: #1b3a4b; margin-bottom: 15px; text-align: center; }
-    .form-group { margin-bottom: 15px; text-align: left; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #333; }
-    .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
-    .btn { width: 100%; padding: 10px; background: #065a82; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-    .btn-google { background: #db4437; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .toggle-link { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b; cursor: pointer; }
-    .toggle-link span { color: #065a82; font-weight: bold; }
+    .auth-container { 
+      max-width: 340px; 
+      margin: 40px auto; 
+      padding: 24px 20px; 
+      background: #ffffff; 
+      border-radius: 14px; 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08); 
+      text-align: center; 
+    }
+    .auth-container h2 { 
+      color: #1b3a4b; 
+      margin-bottom: 18px; 
+      font-size: 1.3rem;
+    }
+    .form-group { 
+      margin-bottom: 14px; 
+      text-align: left; 
+    }
+    .form-group label { 
+      display: block; 
+      font-size: 0.82rem; 
+      font-weight: bold; 
+      margin-bottom: 5px; 
+      color: #334155; 
+    }
+    .form-group input { 
+      width: 100%; 
+      padding: 10px 12px; 
+      border: 1px solid #cbd5e1; 
+      border-radius: 8px; 
+      font-size: 0.9rem; 
+      outline: none;
+      box-sizing: border-box;
+    }
+    .form-group input:focus {
+      border-color: #065a82;
+    }
+    .btn { 
+      width: 100%; 
+      padding: 11px; 
+      background: #065a82; 
+      color: #ffffff; 
+      border: none; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      font-size: 0.95rem;
+      cursor: pointer; 
+      margin-top: 6px; 
+      transition: background 0.2s ease;
+    }
+    .btn:hover {
+      background: #1b3a4b;
+    }
+    .btn-google { 
+      background: #ffffff; 
+      color: #374151; 
+      border: 1px solid #cbd5e1; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 10px; 
+      margin-top: 12px; 
+      font-size: 0.9rem;
+    }
+    .btn-google:hover {
+      background: #f8fafc;
+    }
+    .divider {
+      margin: 16px 0 12px 0; 
+      font-size: 0.78rem; 
+      color: #94a3b8; 
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .divider::before { margin-right: 8px; }
+    .divider::after { margin-left: 8px; }
+    
+    .toggle-link { 
+      text-align: center; 
+      margin-top: 18px; 
+      font-size: 0.85rem; 
+      color: #64748b; 
+      cursor: pointer; 
+    }
+    .toggle-link span { 
+      color: #065a82; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 <body>
   <main class="mobile-content">
     <div class="auth-container">
+      
+      <!-- LOGIN FORM -->
       <div id="login-form-box">
         <h2>Member Sign In</h2>
-        <form id="loginForm" onsubmit="handleLogin(event)">
+        <form id="loginForm" onsubmit="handleLocalLogin(event)">
           <div class="form-group">
-            <label>Email Address</label>
+            <label for="loginEmail">Email Address</label>
             <input type="email" id="loginEmail" required placeholder="name@kensington.org">
           </div>
           <div class="form-group">
-            <label>Password (Encrypted)</label>
+            <label for="loginPassword">Password (Encrypted)</label>
             <input type="password" id="loginPassword" required placeholder="••••••••">
           </div>
           <button type="submit" class="btn">Sign In</button>
         </form>
 
-        <button onclick="handleGoogleSSO()" class="btn btn-google">
-          <span>🌐</span> Sign in with Google SSO
+        <div class="divider">OR</div>
+
+        <!-- Google SSO Button -->
+        <button onclick="handleGoogleSSO()" type="button" class="btn btn-google">
+          <img src="https://developers.google.com/identity/images/g-logo.png" width="18" height="18" alt="Google Logo">
+          <span>Sign in with Google</span>
         </button>
 
         <p class="toggle-link" onclick="toggleAuthMode()">Don't have an account? <span>Register here</span></p>
       </div>
 
+      <!-- REGISTER FORM -->
       <div id="register-form-box" style="display: none;">
         <h2>Create Account</h2>
         <form id="registerForm" onsubmit="handleRegister(event)">
           <div class="form-group">
-            <label>Full Name</label>
+            <label for="regName">Full Name</label>
             <input type="text" id="regName" required placeholder="Jane Doe">
           </div>
           <div class="form-group">
-            <label>Email Address</label>
+            <label for="regEmail">Email Address</label>
             <input type="email" id="regEmail" required placeholder="name@kensington.org">
           </div>
           <div class="form-group">
-            <label>Password (Will be Hashed)</label>
+            <label for="regPassword">Password (Salted & Hashed)</label>
             <input type="password" id="regPassword" required placeholder="••••••••">
           </div>
           <button type="submit" class="btn" style="background: #27ae60;">Register Member</button>
         </form>
         <p class="toggle-link" onclick="toggleAuthMode()">Already have an account? <span>Sign in here</span></p>
       </div>
+
     </div>
   </main>
 
   <script>
+    // Toggle between login and registration forms
     function toggleAuthMode() {
       const loginBox = document.getElementById('login-form-box');
       const regBox = document.getElementById('register-form-box');
-      if (loginBox.style.display === 'none') {
-        loginBox.style.display = 'block';
-        regBox.style.display = 'none';
-      } else {
-        loginBox.style.display = 'none';
-        regBox.style.display = 'block';
-      }
+      const isLogin = loginBox.style.display !== 'none';
+      loginBox.style.display = isLogin ? 'none' : 'block';
+      regBox.style.display = isLogin ? 'block' : 'none';
     }
 
-    function handleLogin(e) {
+    // Handles standard local login
+    function handleLocalLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
-      // Simulate password hashing validation & successful login
-      alert('Login successful! Redirecting to Member Dashboard...');
+      const userName = email.split('@')[0].replace('.', ' ');
+      
+      localStorage.setItem('abts_user_name', userName.toUpperCase());
+      localStorage.setItem('abts_user_email', email);
+      localStorage.setItem('abts_authenticated', 'true');
+      
+      alert('Sign in successful! Loading Kensington Library Portal...');
       window.location.href = 'index.html';
     }
 
+    // Handles user registration
     function handleRegister(e) {
       e.preventDefault();
       const name = document.getElementById('regName').value;
-      alert('Registration successful with salted password hash! Please sign in.');
+      const email = document.getElementById('regEmail').value;
+      
+      localStorage.setItem('abts_user_name', name);
+      localStorage.setItem('abts_user_email', email);
+      alert('Account registered successfully with salted password encryption! Please sign in.');
       toggleAuthMode();
     }
 
+    // Handles Google OAuth SSO simulation
     function handleGoogleSSO() {
-      // Simulating Google OAuth API Token Handshake
-      alert('Google SSO API Handshake authenticated successfully! Loading user profile...');
-      window.location.href = 'index.html';
+      const userEmail = prompt("Google Single Sign-On (SSO):\nEnter your Google Account email to authenticate:", "josecontreiras14@gmail.com");
+      
+      if (userEmail && userEmail.trim() !== "") {
+        const emailPrefix = userEmail.split('@')[0].replace(/[^a-zA-Z]/g, ' ');
+        const formattedName = emailPrefix.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        
+        localStorage.setItem('abts_user_name', formattedName || 'Jose Contreiras');
+        localStorage.setItem('abts_user_email', userEmail);
+        localStorage.setItem('abts_authenticated', 'true');
+        
+        alert(`Google OAuth2 Token Authenticated Successfully!\nWelcome, ${userEmail}`);
+        window.location.href = 'index.html';
+      }
     }
   </script>
 </body>

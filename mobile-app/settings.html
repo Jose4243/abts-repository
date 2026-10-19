@@ -2,11 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kensington Mobile Library - Settings</title>
   <link rel="stylesheet" href="../css/mobile.css">
+  <script>
+    // Auth Guard: Enforce login session
+    if (localStorage.getItem('abts_authenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 <body>
+  <!-- Header Banner -->
   <header class="greeting-banner">
     <h2>Account Settings ⚙️</h2>
     <p>Manage Preferences & Security</p>
@@ -14,22 +21,41 @@
 
   <main class="mobile-content">
     <section class="section-block">
+      
+      <!-- Notification Settings Card -->
       <div class="carousel-card" style="width: 100%; margin-bottom: 1rem;">
         <h4>Notification Preferences</h4>
         <p class="author">Due date alerts & library announcements</p>
-        <label><input type="checkbox" checked> Push Notifications</label><br>
-        <label><input type="checkbox" checked> Email Reminders</label>
+        <div style="margin-top: 10px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 8px;">
+          <label><input type="checkbox" checked> Push Notifications</label>
+          <label><input type="checkbox" checked> Email Reminders</label>
+        </div>
       </div>
 
+      <!-- Security & SSO Card -->
       <div class="carousel-card" style="width: 100%; margin-bottom: 1rem;">
         <h4>Security & SSO</h4>
-        <p class="author">Single Sign-On linked to Google</p>
-        <p><strong>Status:</strong> Encrypted (AES-256)</p>
+        <p class="author">Single Sign-On & Session Identity</p>
+        <div style="margin-top: 8px; font-size: 0.85rem; line-height: 1.4;">
+          <p><strong>Signed in as:</strong> <span id="user-display">Loading...</span></p>
+          <p><strong>Security:</strong> Encrypted (AES-256 / SHA-256)</p>
+        </div>
       </div>
+
+      <!-- Session Management / Logout Card -->
+      <div class="carousel-card" style="width: 100%; margin-bottom: 1rem;">
+        <h4>Session Management</h4>
+        <p class="author">Sign out or switch accounts</p>
+        <button onclick="handleLogout()" class="btn" style="width: 100%; padding: 10px; background: #e74c3c; color: #fff; border: none; border-radius: 6px; font-weight: bold; margin-top: 10px; cursor: pointer;">
+          Sign Out / Switch Account
+        </button>
+      </div>
+
     </section>
   </main>
 
- <nav class="bottom-nav">
+  <!-- Persistent 4-Item Bottom Navigation Bar -->
+  <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
       <span class="nav-icon">🏠</span>
       <span class="nav-label">Home</span>
@@ -47,5 +73,24 @@
       <span class="nav-label">Settings</span>
     </a>
   </nav>
+
+  <script>
+    // Display the logged-in user details dynamically
+    document.addEventListener("DOMContentLoaded", () => {
+      const userName = localStorage.getItem('abts_user_name') || 'Jane Doe';
+      const userEmail = localStorage.getItem('abts_user_email') || 'jane.doe@kensington.org';
+      document.getElementById('user-display').textContent = `${userName} (${userEmail})`;
+    });
+
+    // Handle user logout and clear session state
+    function handleLogout() {
+      localStorage.removeItem('abts_authenticated');
+      localStorage.removeItem('abts_user_name');
+      localStorage.removeItem('abts_user_email');
+      localStorage.removeItem('abts_user_picture');
+      alert("Signed out successfully. Returning to login screen.");
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>

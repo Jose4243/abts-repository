@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kensington Mobile Library - Digital ID</title>
   <link rel="stylesheet" href="../css/mobile.css">
+  <script>
+    // Auth Guard
+    if (localStorage.getItem('abts_authenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 <body>
   <main class="mobile-content center-wrapper">
@@ -22,10 +28,10 @@
           <span class="photo-text">PHOTO</span>
         </div>
 
-        <!-- Member Details -->
+        <!-- Dynamic Member Details -->
         <div class="member-details">
-          <h2>Jane Doe</h2>
-          <p class="id-number"><strong>ID:</strong> M-1001-2026</p>
+          <h2 id="card-name">Jane Doe</h2>
+          <p class="id-number"><strong>ID:</strong> <span id="card-id">M-1001-2026</span></p>
           <p class="member-status">STATUS: ACTIVE</p>
         </div>
       </div>
@@ -35,7 +41,7 @@
         <div class="mock-qr-code">
           <div class="qr-grid"></div>
           <p class="qr-label">||||| | |||| ||| ||||| |||</p>
-          <span class="scan-hint">Scan at Desk Barcode Reader</span>
+          <span class="scan-hint" id="scan-hint-email">Scan at Desk Barcode Reader</span>
         </div>
       </footer>
     </section>
@@ -60,5 +66,16 @@
       <span class="nav-label">Settings</span>
     </a>
   </nav>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = localStorage.getItem('abts_user_name') || 'Jane Doe';
+      const email = localStorage.getItem('abts_user_email') || 'M-1001';
+      
+      document.getElementById('card-name').textContent = name;
+      document.getElementById('card-id').textContent = `M-${email.substring(0, 4).toUpperCase()}-2026`;
+      document.getElementById('scan-hint-email').textContent = `Pass: ${email}`;
+    });
+  </script>
 </body>
 </html>

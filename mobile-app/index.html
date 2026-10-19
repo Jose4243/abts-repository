@@ -2,15 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kensington Mobile Library - Home</title>
   <link rel="stylesheet" href="../css/mobile.css">
+  <script>
+    // Auth Guard
+    if (localStorage.getItem('abts_authenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 <body>
   <!-- Greeting Banner -->
   <header class="greeting-banner">
-    <h2>Hello, Jane Doe 👋</h2>
-    <p>Member ID: M-1001 | Kensington Branch</p>
+    <h2 id="user-greeting">Hello, User 👋</h2>
+    <p id="user-id-display">Member ID: M-1001 | Kensington Branch</p>
   </header>
 
   <main class="mobile-content">
@@ -62,10 +68,20 @@
       <span class="nav-icon">🪪</span>
       <span class="nav-label">Digital ID</span>
     </a>
-    <a href="#profile" class="nav-item">
-      <span class="nav-icon">👤</span>
-      <span class="nav-label">Profile</span>
+    <a href="settings.html" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">Settings</span>
     </a>
   </nav>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = localStorage.getItem('abts_user_name') || 'Jane Doe';
+      const email = localStorage.getItem('abts_user_email') || 'jane.doe@kensington.org';
+      
+      document.getElementById('user-greeting').textContent = `Hello, ${name} 👋`;
+      document.getElementById('user-id-display').textContent = `Account: ${email} | Kensington Branch`;
+    });
+  </script>
 </body>
 </html>
