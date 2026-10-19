@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kensington Community Library - Web Dashboard</title>
+  <link rel="stylesheet" href="../css/desktop.css">
+
+  <style>
+    .nav-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 8px;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #64748b;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .tab-btn.active {
+      background: #065a82;
+      color: #ffffff;
+    }
+    .view-panel {
+      display: none;
+    }
+    .view-panel.active {
+      display: block;
+    }
+    .member-table, .catalog-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+    }
+    .member-table th, .member-table td,
+    .catalog-table th, .catalog-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .member-table th, .catalog-table th {
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+    .badge-active {
+      background: #27ae60;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+  </style>
+
+  <script>
+    // Desktop Auth Guard
+    if (localStorage.getItem('abts_authenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Header Banner -->
+  <header class="desktop-header" id="main-header" style="background: #065a82; color: #fff; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h1 style="font-size: 1.4rem; font-weight: bold;">Kensington Community Library Dashboard</h1>
+      <p style="font-size: 0.85rem; opacity: 0.9;" id="nav-user-identity">Member: Loading...</p>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <button onclick="toggleTheme()" id="theme-btn" style="padding: 8px 14px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; background: #ffffff; color: #1e293b;">
+        🌙 Dark Mode
+      </button>
+      <button onclick="handleLogout()" style="padding: 8px 14px; background: #e74c3c; color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="desktop-content" style="padding: 32px; max-width: 1200px; margin: 0 auto;">
+    
+    <!-- Navigation Tabs (Dashboard, Members, Catalog) -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('members', this)">👥 Members</button>
+      <button class="tab-btn" onclick="switchTab('catalog', this)">📚 Catalog</button>
+    </div>
+
+    <!-- PANEL 1: DASHBOARD OVERVIEW -->
+    <div id="view-dashboard" class="view-panel active">
+      <section style="margin-bottom: 24px;">
+        <h2 id="desktop-greeting">Welcome back!</h2>
+        <p id="desktop-account-info">Active Library Member Account</p>
+      </section>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+        <!-- Active Loans -->
+        <section class="card-section">
+          <h3>Active Borrowed Books</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+            <div class="carousel-card" style="padding: 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff;">
+              <h4>1984</h4>
+              <p style="color: #64748b; font-size: 0.88rem;">George Orwell • Due in 2 Days (Sep 5, 2026)</p>
+            </div>
+            <div class="carousel-card" style="padding: 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff;">
+              <h4>To Kill a Mockingbird</h4>
+              <p style="color: #64748b; font-size: 0.88rem;">Harper Lee • Due in 10 Days (Sep 13, 2026)</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Digital ID Summary -->
+        <section class="card-section">
+          <h3>Digital Membership</h3>
+          <div class="carousel-card" style="padding: 20px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; margin-top: 12px; background: #fff;">
+            <p><strong>Member Status:</strong> <span class="badge-active">ACTIVE</span></p>
+            <h3 id="desktop-id-name" style="margin-top: 8px;">Jane Doe</h3>
+            <p id="desktop-id-code" style="color: #64748b; font-size: 0.85rem;">ID: M-1001-2026</p>
+            <p style="font-family: monospace; letter-spacing: 2px; margin-top: 12px; font-size: 1.1rem;">||||| | |||| ||| |||||</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- PANEL 2: MEMBERS MANAGEMENT -->
+    <div id="view-members" class="view-panel">
+      <h3>Registered & Recently Logged-In Members</h3>
+      <p style="color: #64748b; font-size: 0.9rem; margin-top: 4px;">Live session synchronized with the Mobile Library Application.</p>
+      
+      <table class="member-table" id="memberTable">
+        <thead>
+          <tr>
+            <th>Member Name</th>
+            <th>Email Address</th>
+            <th>Member ID</th>
+            <th>Status</th>
+            <th>Last Active Device</th>
+          </tr>
+        </thead>
+        <tbody id="member-table-body">
+          <!-- Dynamic row loaded via JS -->
+          <tr>
+            <td>Jane Doe</td>
+            <td>jane.doe@kensington.org</td>
+            <td>M-1001-2026</td>
+            <td><span class="badge-active">ACTIVE</span></td>
+            <td>Mobile App</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PANEL 3: CATALOG SEARCH -->
+    <div id="view-catalog" class="view-panel">
+      <h3>Library Book Catalog</h3>
+      <input type="text" id="catalog-search-input" onkeyup="filterCatalog()" placeholder="🔍 Type title or author..." style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin: 12px 0;">
+      
+      <table class="catalog-table" id="catalogTable">
+        <thead>
+          <tr>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Genre / Category</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1984</td>
+            <td>George Orwell</td>
+            <td>Dystopian / Fiction</td>
+            <td><span style="color: #e67e22; font-weight: bold;">Checked Out</span></td>
+          </tr>
+          <tr>
+            <td>To Kill a Mockingbird</td>
+            <td>Harper Lee</td>
+            <td>Classic / Fiction</td>
+            <td><span style="color: #e67e22; font-weight: bold;">Checked Out</span></td>
+          </tr>
+          <tr>
+            <td>The Great Gatsby</td>
+            <td>F. Scott Fitzgerald</td>
+            <td>Classic Literature</td>
+            <td><span style="color: #27ae60; font-weight: bold;">Available</span></td>
+          </tr>
+          <tr>
+            <td>Pride and Prejudice</td>
+            <td>Jane Austen</td>
+            <td>Romance / Classic</td>
+            <td><span style="color: #27ae60; font-weight: bold;">Available</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const name = localStorage.getItem('abts_user_name') || 'Jane Doe';
+      const email = localStorage.getItem('abts_user_email') || 'jane.doe@kensington.org';
+      
+      // Update User Identity across dashboard
+      document.getElementById('nav-user-identity').textContent = `Member: ${name} (${email})`;
+      document.getElementById('desktop-greeting').textContent = `Welcome back, ${name} 👋`;
+      document.getElementById('desktop-account-info').textContent = `Account: ${email} | Kensington Main Branch`;
+      document.getElementById('desktop-id-name').textContent = name;
+      document.getElementById('desktop-id-code').textContent = `ID: M-${email.substring(0, 4).toUpperCase()}-2026`;
+
+      // Update Members Table with Logged-In Mobile User
+      const tbody = document.getElementById('member-table-body');
+      tbody.innerHTML = `
+        <tr>
+          <td><strong>${name}</strong></td>
+          <td>${email}</td>
+          <td>M-${email.substring(0, 4).toUpperCase()}-2026</td>
+          <td><span class="badge-active">ONLINE</span></td>
+          <td>Mobile App / Web Portal</td>
+        </tr>
+        <tr>
+          <td>Jane Doe</td>
+          <td>jane.doe@kensington.org</td>
+          <td>M-1001-2026</td>
+          <td><span class="badge-active">ACTIVE</span></td>
+          <td>Mobile App</td>
+        </tr>
+      `;
+
+      // Apply Dark Mode if active
+      if (localStorage.getItem('abts_theme') === 'dark') {
+        applyDarkTheme(true);
+      }
+    });
+
+    // Tab Switching Logic
+    function switchTab(tabName, btnElement) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+
+      btnElement.classList.add('active');
+      document.getElementById(`view-${tabName}`).classList.add('active');
+    }
+
+    // Live Catalog Filter
+    function filterCatalog() {
+      const query = document.getElementById('catalog-search-input').value.toLowerCase();
+      const rows = document.querySelectorAll('#catalogTable tbody tr');
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? "" : "none";
+      });
+    }
+
+    // Global Theme Toggle
+    function toggleTheme() {
+      const isDark = localStorage.getItem('abts_theme') !== 'dark';
+      localStorage.setItem('abts_theme', isDark ? 'dark' : 'light');
+      applyDarkTheme(isDark);
+    }
+
+    function applyDarkTheme(isDark) {
+      document.body.style.backgroundColor = isDark ? "#0f172a" : "#f8fafc";
+      document.body.style.color = isDark ? "#f8fafc" : "#1e293b";
+
+      const header = document.getElementById('main-header');
+      if (header) header.style.backgroundColor = isDark ? "#1e293b" : "#065a82";
+
+      const cards = document.querySelectorAll('.carousel-card, .member-table, .catalog-table');
+      cards.forEach(card => {
+        card.style.backgroundColor = isDark ? "#1e293b" : "#ffffff";
+        card.style.color = isDark ? "#f8fafc" : "#1e293b";
+        card.style.borderColor = isDark ? "#334155" : "#cbd5e1";
+      });
+
+      const btn = document.getElementById('theme-btn');
+      if (btn) {
+        btn.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+        btn.style.backgroundColor = isDark ? "#334155" : "#ffffff";
+        btn.style.color = isDark ? "#ffffff" : "#1e293b";
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('abts_authenticated');
+      localStorage.removeItem('abts_user_name');
+      localStorage.removeItem('abts_user_email');
+      alert("Signed out of Desktop Portal. Returning to login screen.");
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
