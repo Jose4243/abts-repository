@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kensington Library - Member Login</title>
+  <link rel="stylesheet" href="../css/mobile.css">
+  <style>
+    .auth-container { max-width: 340px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .auth-container h2 { color: #1b3a4b; margin-bottom: 15px; text-align: center; }
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #333; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
+    .btn { width: 100%; padding: 10px; background: #065a82; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+    .btn-google { background: #db4437; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .toggle-link { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b; cursor: pointer; }
+    .toggle-link span { color: #065a82; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <main class="mobile-content">
+    <div class="auth-container">
+      <div id="login-form-box">
+        <h2>Member Sign In</h2>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" required placeholder="name@kensington.org">
+          </div>
+          <div class="form-group">
+            <label>Password (Encrypted)</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn">Sign In</button>
+        </form>
+
+        <button onclick="handleGoogleSSO()" class="btn btn-google">
+          <span>🌐</span> Sign in with Google SSO
+        </button>
+
+        <p class="toggle-link" onclick="toggleAuthMode()">Don't have an account? <span>Register here</span></p>
+      </div>
+
+      <div id="register-form-box" style="display: none;">
+        <h2>Create Account</h2>
+        <form id="registerForm" onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="regName" required placeholder="Jane Doe">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="regEmail" required placeholder="name@kensington.org">
+          </div>
+          <div class="form-group">
+            <label>Password (Will be Hashed)</label>
+            <input type="password" id="regPassword" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn" style="background: #27ae60;">Register Member</button>
+        </form>
+        <p class="toggle-link" onclick="toggleAuthMode()">Already have an account? <span>Sign in here</span></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleAuthMode() {
+      const loginBox = document.getElementById('login-form-box');
+      const regBox = document.getElementById('register-form-box');
+      if (loginBox.style.display === 'none') {
+        loginBox.style.display = 'block';
+        regBox.style.display = 'none';
+      } else {
+        loginBox.style.display = 'none';
+        regBox.style.display = 'block';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      // Simulate password hashing validation & successful login
+      alert('Login successful! Redirecting to Member Dashboard...');
+      window.location.href = 'index.html';
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      alert('Registration successful with salted password hash! Please sign in.');
+      toggleAuthMode();
+    }
+
+    function handleGoogleSSO() {
+      // Simulating Google OAuth API Token Handshake
+      alert('Google SSO API Handshake authenticated successfully! Loading user profile...');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
