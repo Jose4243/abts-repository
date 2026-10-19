@@ -5,33 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kensington Mobile Library - Home</title>
   <link rel="stylesheet" href="../css/mobile.css">
+  
   <script>
-    // Auth Guard
     if (localStorage.getItem('abts_authenticated') !== 'true') {
       window.location.href = 'login.html';
     }
   </script>
 </head>
 <body>
-  <!-- Greeting Banner -->
   <header class="greeting-banner">
     <h2 id="user-greeting">Hello, User 👋</h2>
     <p id="user-id-display">Member ID: M-1001 | Kensington Branch</p>
   </header>
 
   <main class="mobile-content">
-    <!-- Quick Search Bar -->
     <section class="search-section">
       <div class="quick-search">
-        <input type="text" placeholder="🔍 Quick search catalog by title, author, or ISBN..." aria-label="Search catalog">
+        <input type="text" id="catalog-search" placeholder="🔍 Quick search catalog by title, author, or ISBN..." aria-label="Search catalog">
       </div>
     </section>
 
-    <!-- Active Borrowed Books Carousel -->
     <section class="section-block">
       <h3>Active Borrowed Books</h3>
       <div class="carousel-container">
-        <!-- Card 1 -->
         <article class="carousel-card">
           <h4>1984</h4>
           <p class="author">George Orwell</p>
@@ -41,7 +37,6 @@
           </div>
         </article>
 
-        <!-- Card 2 -->
         <article class="carousel-card">
           <h4>To Kill a Mockingbird</h4>
           <p class="author">Harper Lee</p>
@@ -54,7 +49,6 @@
     </section>
   </main>
 
-  <!-- Persistent 4-Item Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
@@ -81,6 +75,35 @@
       
       document.getElementById('user-greeting').textContent = `Hello, ${name} 👋`;
       document.getElementById('user-id-display').textContent = `Account: ${email} | Kensington Branch`;
+
+      // Apply Theme
+      if (localStorage.getItem('abts_theme') === 'dark') {
+        document.body.style.backgroundColor = "#0f172a";
+        document.body.style.color = "#f8fafc";
+        
+        const header = document.querySelector('.greeting-banner');
+        if (header) header.style.backgroundColor = "#1e293b";
+
+        const cards = document.querySelectorAll('.carousel-card');
+        cards.forEach(card => {
+          card.style.backgroundColor = "#1e293b";
+          card.style.color = "#f8fafc";
+          card.style.borderColor = "#334155";
+        });
+
+        const searchInput = document.getElementById('catalog-search');
+        if (searchInput) {
+          searchInput.style.backgroundColor = "#1e293b";
+          searchInput.style.color = "#f8fafc";
+          searchInput.style.borderColor = "#334155";
+        }
+
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+          nav.style.backgroundColor = "#1e293b";
+          nav.style.borderColor = "#334155";
+        }
+      }
     });
   </script>
 </body>

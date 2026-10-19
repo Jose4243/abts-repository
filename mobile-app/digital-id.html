@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kensington Mobile Library - Digital ID</title>
   <link rel="stylesheet" href="../css/mobile.css">
+  
   <script>
-    // Auth Guard
     if (localStorage.getItem('abts_authenticated') !== 'true') {
       window.location.href = 'login.html';
     }
@@ -14,21 +14,18 @@
 </head>
 <body>
   <main class="mobile-content center-wrapper">
-    <!-- Centered Card Presentation for Handheld Scanning -->
-    <section class="digital-id-card">
-      <header class="id-header">
+    <section class="digital-id-card" id="id-card-box">
+      <header class="id-header" id="card-header-elem">
         <h3>KENSINGTON COMMUNITY LIBRARY</h3>
         <span class="pass-badge">OFFICIAL MEMBER PASS</span>
       </header>
 
       <div class="id-body">
-        <!-- Photo Placeholder -->
         <div class="photo-placeholder">
           <span class="photo-icon">👤</span>
           <span class="photo-text">PHOTO</span>
         </div>
 
-        <!-- Dynamic Member Details -->
         <div class="member-details">
           <h2 id="card-name">Jane Doe</h2>
           <p class="id-number"><strong>ID:</strong> <span id="card-id">M-1001-2026</span></p>
@@ -36,10 +33,8 @@
         </div>
       </div>
 
-      <!-- Dynamically Generated QR Barcode Block -->
-      <footer class="qr-container">
+      <footer class="qr-container" id="qr-box">
         <div class="mock-qr-code">
-          <div class="qr-grid"></div>
           <p class="qr-label">||||| | |||| ||| ||||| |||</p>
           <span class="scan-hint" id="scan-hint-email">Scan at Desk Barcode Reader</span>
         </div>
@@ -47,7 +42,6 @@
     </section>
   </main>
 
-  <!-- Persistent 4-Item Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
       <span class="nav-icon">🏠</span>
@@ -75,6 +69,31 @@
       document.getElementById('card-name').textContent = name;
       document.getElementById('card-id').textContent = `M-${email.substring(0, 4).toUpperCase()}-2026`;
       document.getElementById('scan-hint-email').textContent = `Pass: ${email}`;
+
+      // Apply Theme
+      if (localStorage.getItem('abts_theme') === 'dark') {
+        document.body.style.backgroundColor = "#0f172a";
+        document.body.style.color = "#f8fafc";
+        
+        const card = document.getElementById('id-card-box');
+        if (card) {
+          card.style.backgroundColor = "#1e293b";
+          card.style.color = "#f8fafc";
+          card.style.borderColor = "#334155";
+        }
+
+        const qrContainer = document.getElementById('qr-box');
+        if (qrContainer) {
+          qrContainer.style.backgroundColor = "#0f172a";
+          qrContainer.style.borderTopColor = "#334155";
+        }
+
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+          nav.style.backgroundColor = "#1e293b";
+          nav.style.borderColor = "#334155";
+        }
+      }
     });
   </script>
 </body>

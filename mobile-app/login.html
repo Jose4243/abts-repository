@@ -159,7 +159,10 @@
 
   <script>
   // Toggle between login and registration forms
-    function toggleAuthMode() {
+  if (localStorage.getItem('abts_theme') === 'dark') {
+    document.documentElement.classList.add('dark-mode');
+  }  
+  function toggleAuthMode() {
       const loginBox = document.getElementById('login-form-box');
       const regBox = document.getElementById('register-form-box');
       const isLogin = loginBox.style.display !== 'none';
