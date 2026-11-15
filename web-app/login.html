@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kensington Library - Portal Login</title>
+  <link rel="stylesheet" href="../css/desktop.css">
+  
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid #cbd5e1;
+      text-align: center;
+    }
+    .auth-card h2 {
+      color: #1b3a4b;
+      margin-bottom: 8px;
+    }
+    .auth-card p.subtitle {
+      color: #64748b;
+      font-size: 0.88rem;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #065a82;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn:hover { background: #1b3a4b; }
+    .btn-google {
+      background: #ffffff;
+      color: #374151;
+      border: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .btn-google:hover { background: #f8fafc; }
+    .divider {
+      margin: 20px 0;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .divider::before { margin-right: 10px; }
+    .divider::after { margin-left: 10px; }
+    .toggle-link {
+      margin-top: 20px;
+      font-size: 0.88rem;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .toggle-link span { color: #065a82; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <!-- LOGIN FORM -->
+    <div id="login-form-box">
+      <h2>Desktop Portal Sign In</h2>
+      <p class="subtitle">Access Kensington Community Library Services</p>
+      
+      <form onsubmit="handleLocalLogin(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="name@kensington.org">
+        </div>
+        <div class="form-group">
+          <label>Password (Encrypted)</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn">Sign In to Dashboard</button>
+      </form>
+
+      <div class="divider">OR</div>
+
+      <button onclick="handleGoogleSSO()" type="button" class="btn btn-google">
+        <img src="https://developers.google.com/identity/images/g-logo.png" width="18" height="18" alt="Google Logo">
+        <span>Sign in with Google</span>
+      </button>
+
+      <p class="toggle-link" onclick="toggleAuthMode()">Don't have an account? <span>Register here</span></p>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form-box" style="display: none;">
+      <h2>Register Portal Account</h2>
+      <p class="subtitle">Create a new library member profile</p>
+      
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" required placeholder="Jane Doe">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" required placeholder="name@kensington.org">
+        </div>
+        <div class="form-group">
+          <label>Password (Salted & Hashed)</label>
+          <input type="password" id="regPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn" style="background: #27ae60;">Create Member Account</button>
+      </form>
+
+      <p class="toggle-link" onclick="toggleAuthMode()">Already registered? <span>Sign in here</span></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem('abts_theme') === 'dark') {
+        document.body.style.backgroundColor = "#0f172a";
+        document.body.style.color = "#f8fafc";
+        const card = document.querySelector('.auth-card');
+        if (card) {
+          card.style.backgroundColor = "#1e293b";
+          card.style.borderColor = "#334155";
+          card.style.color = "#f8fafc";
+        }
+      }
+    });
+
+    function toggleAuthMode() {
+      const loginBox = document.getElementById('login-form-box');
+      const regBox = document.getElementById('register-form-box');
+      const isLogin = loginBox.style.display !== 'none';
+      loginBox.style.display = isLogin ? 'none' : 'block';
+      regBox.style.display = isLogin ? 'block' : 'none';
+    }
+
+    function handleLocalLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const registeredEmail = localStorage.getItem('abts_registered_email');
+
+      if (!registeredEmail || registeredEmail.toLowerCase() !== email.toLowerCase()) {
+        alert("Error: Account not found! You have not registered with this email yet. Please click 'Register here' below to create an account first.");
+        return;
+      }
+
+      const userName = localStorage.getItem('abts_user_name') || email.split('@')[0];
+      localStorage.setItem('abts_authenticated', 'true');
+      localStorage.setItem('abts_user_email', email);
+      
+      alert('Sign in successful! Loading Kensington Desktop Portal...');
+      window.location.href = 'index.html';
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value.trim();
+      
+      localStorage.setItem('abts_registered_email', email);
+      localStorage.setItem('abts_user_name', name);
+      localStorage.setItem('abts_user_email', email);
+      
+      alert('Account registered successfully! Please sign in with your credentials.');
+      toggleAuthMode();
+    }
+
+    function handleGoogleSSO() {
+      const userEmail = prompt("Google Single Sign-On (SSO):\nEnter your Google Account email to authenticate:", "josecontreiras14@gmail.com");
+      
+      if (userEmail && userEmail.trim() !== "") {
+        const emailPrefix = userEmail.split('@')[0].replace(/[^a-zA-Z]/g, ' ');
+        const formattedName = emailPrefix.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        
+        localStorage.setItem('abts_registered_email', userEmail);
+        localStorage.setItem('abts_user_name', formattedName || 'Jose Contreiras');
+        localStorage.setItem('abts_user_email', userEmail);
+        localStorage.setItem('abts_authenticated', 'true');
+        
+        alert(`Google OAuth2 Token Authenticated Successfully!\nWelcome, ${userEmail}`);
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -6,6 +6,13 @@
   <title>Kensington Library - Member Login</title>
   <link rel="stylesheet" href="../css/mobile.css">
   
+  <script>
+    // Apply global dark theme instantly before page renders
+    if (localStorage.getItem('abts_theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+  </script>
+
   <style>
     .auth-container { 
       max-width: 340px; 
@@ -41,9 +48,6 @@
       outline: none;
       box-sizing: border-box;
     }
-    .form-group input:focus {
-      border-color: #065a82;
-    }
     .btn { 
       width: 100%; 
       padding: 11px; 
@@ -55,10 +59,6 @@
       font-size: 0.95rem;
       cursor: pointer; 
       margin-top: 6px; 
-      transition: background 0.2s ease;
-    }
-    .btn:hover {
-      background: #1b3a4b;
     }
     .btn-google { 
       background: #ffffff; 
@@ -70,9 +70,6 @@
       gap: 10px; 
       margin-top: 12px; 
       font-size: 0.9rem;
-    }
-    .btn-google:hover {
-      background: #f8fafc;
     }
     .divider {
       margin: 16px 0 12px 0; 
@@ -158,11 +155,13 @@
   </main>
 
   <script>
-  // Toggle between login and registration forms
-  if (localStorage.getItem('abts_theme') === 'dark') {
-    document.documentElement.classList.add('dark-mode');
-  }  
-  function toggleAuthMode() {
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem('abts_theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+    });
+
+    function toggleAuthMode() {
       const loginBox = document.getElementById('login-form-box');
       const regBox = document.getElementById('register-form-box');
       const isLogin = loginBox.style.display !== 'none';
@@ -170,21 +169,16 @@
       regBox.style.display = isLogin ? 'block' : 'none';
     }
 
-    // Handles standard local login with account existence check
     function handleLocalLogin(e) {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
-      
-      // Check if this user was previously registered in this browser session
       const registeredEmail = localStorage.getItem('abts_registered_email');
 
-      // If no account is registered yet, or the email doesn't match a registered account:
-      if (!registeredEmail || registeredEmail !== email) {
+      if (!registeredEmail || registeredEmail.toLowerCase() !== email.toLowerCase()) {
         alert("Error: Account not found! You have not registered with this email yet. Please click 'Register here' below to create an account first.");
-        return; // Stops login and prevents auto-registering
+        return;
       }
 
-      // If valid, log them in
       const userName = localStorage.getItem('abts_user_name') || email.split('@')[0];
       localStorage.setItem('abts_authenticated', 'true');
       localStorage.setItem('abts_user_email', email);
@@ -193,13 +187,11 @@
       window.location.href = 'index.html';
     }
 
-    // Handles user registration and saves the account
     function handleRegister(e) {
       e.preventDefault();
       const name = document.getElementById('regName').value;
       const email = document.getElementById('regEmail').value.trim();
       
-      // Save credentials to local storage to simulate database record
       localStorage.setItem('abts_registered_email', email);
       localStorage.setItem('abts_user_name', name);
       localStorage.setItem('abts_user_email', email);
@@ -208,7 +200,6 @@
       toggleAuthMode();
     }
 
-    // Handles Google OAuth SSO simulation
     function handleGoogleSSO() {
       const userEmail = prompt("Google Single Sign-On (SSO):\nEnter your Google Account email to authenticate:", "josecontreiras14@gmail.com");
       
@@ -216,6 +207,7 @@
         const emailPrefix = userEmail.split('@')[0].replace(/[^a-zA-Z]/g, ' ');
         const formattedName = emailPrefix.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         
+        localStorage.setItem('abts_registered_email', userEmail);
         localStorage.setItem('abts_user_name', formattedName || 'Jose Contreiras');
         localStorage.setItem('abts_user_email', userEmail);
         localStorage.setItem('abts_authenticated', 'true');
