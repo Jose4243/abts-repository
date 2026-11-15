@@ -15,7 +15,7 @@
 <body>
   <header class="greeting-banner">
     <h2>Live Library API Catalog 🔍</h2>
-    <p>Tap any book to check availability & borrow</p>
+    <p>Tap any book to view cover, summary & borrow</p>
   </header>
 
   <main class="mobile-content">
@@ -33,12 +33,23 @@
     </section>
   </main>
 
-  <!-- Book Availability & Borrow Modal -->
+  <!-- Book Details & Summary Modal -->
   <div id="bookModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:999; align-items:center; justify-content:center; padding:20px;">
-    <div id="bookModalCard" style="background:#fff; color:#1e293b; width:100%; max-width:380px; border-radius:12px; padding:20px; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
-      <h3 id="modalTitle" style="margin-bottom:6px;">Book Title</h3>
-      <p id="modalAuthor" style="color:#64748b; font-size:0.9rem; margin-bottom:12px;">Author</p>
-      <p style="margin-bottom:16px;"><strong>Availability:</strong> <span id="modalStatusBadge"></span></p>
+    <div id="bookModalCard" style="background:#fff; color:#1e293b; width:100%; max-width:400px; max-height:85vh; overflow-y:auto; border-radius:12px; padding:20px; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
+      
+      <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px;">
+        <img id="modalCover" src="" alt="Book Cover" style="width: 80px; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; background: #e2e8f0;" />
+        <div>
+          <h3 id="modalTitle" style="margin-bottom:4px; font-size: 1.1rem;">Book Title</h3>
+          <p id="modalAuthor" style="color:#64748b; font-size:0.85rem; margin-bottom:8px;">Author</p>
+          <p style="font-size: 0.85rem; margin-bottom:4px;"><strong>Availability:</strong> <span id="modalStatusBadge"></span></p>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <h4 style="font-size: 0.9rem; color: #065a82; margin-bottom: 4px;">Summary / Description:</h4>
+        <p id="modalSummary" style="font-size: 0.85rem; line-height: 1.4; color: #475569; max-height: 120px; overflow-y: auto; padding: 6px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">Loading summary from Open Library...</p>
+      </div>
       
       <div style="display:flex; gap:10px;">
         <button id="modalBorrowBtn" onclick="confirmBorrow()" style="flex:1; padding:10px; background:#27ae60; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Borrow Book</button>
@@ -69,7 +80,6 @@
   <script>
     let selectedBook = null;
 
-    // Seed default borrowed books if none exist yet
     function getBorrowedBooks() {
       const stored = localStorage.getItem('abts_borrowed_books');
       if (stored) return JSON.parse(stored);
@@ -106,33 +116,45 @@
         const data = await response.json();
 
         if (data.docs && data.docs.length > 0) {
-          status.textContent = `Tap a book below to view availability (${data.docs.length} found):`;
+          status.textContent = `Tap any book below to view cover & summary (${data.docs.length} found):`;
           
           data.docs.forEach(book => {
             const title = book.title || "Unknown Title";
             const author = book.author_name ? book.author_name.join(', ') : "Unknown Author";
             const year = book.first_publish_year || "N/A";
+            const coverId = book.cover_i;
+            const workKey = book.key; // e.g. "/works/OL45883W"
             const borrowed = isBookBorrowed(title);
+
+            const coverUrl = coverId 
+              ? `https://covers.openlibrary.org/b/id/${coverId}-S.jpg` 
+              : 'https://via.placeholder.com/50x75?text=No+Cover';
 
             const card = document.createElement('article');
             card.className = "carousel-card";
             card.style.cssText = `
               min-width: 100%; 
-              padding: 14px; 
+              padding: 12px; 
               cursor: pointer;
+              display: flex;
+              gap: 12px;
+              align-items: center;
               background: ${isDark ? '#1e293b' : '#ffffff'}; 
               color: ${isDark ? '#f8fafc' : '#1e293b'};
               border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; 
               border-radius: 8px;
             `;
             card.innerHTML = `
-              <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'}; font-size: 1rem;">${title}</h4>
-              <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.85rem;">Author: ${author} • First Published: ${year}</p>
-              <p class="due-info" style="color: ${borrowed ? '#e67e22' : '#27ae60'}; font-weight: bold; font-size: 0.82rem; margin-top: 6px;">
-                ${borrowed ? '● Currently Borrowed (Tap for details)' : '● Available to Borrow (Tap to borrow)'}
-              </p>
+              <img src="${coverUrl}" alt="Cover" style="width: 45px; height: 65px; object-fit: cover; border-radius: 4px; border: 1px solid #cbd5e1;" />
+              <div style="flex: 1;">
+                <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'}; font-size: 0.95rem; margin-bottom: 2px;">${title}</h4>
+                <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.8rem;">By ${author} (${year})</p>
+                <p class="due-info" style="color: ${borrowed ? '#e67e22' : '#27ae60'}; font-weight: bold; font-size: 0.78rem; margin-top: 4px;">
+                  ${borrowed ? '● Borrowed' : '● Available to Borrow'}
+                </p>
+              </div>
             `;
-            card.onclick = () => openBookModal({ title, author, year });
+            card.onclick = () => openBookModal({ title, author, year, coverId, workKey });
             container.appendChild(card);
           });
         } else {
@@ -144,7 +166,7 @@
       }
     }
 
-    function openBookModal(book) {
+    async function openBookModal(book) {
       selectedBook = book;
       const borrowed = isBookBorrowed(book.title);
       const isDark = localStorage.getItem('abts_theme') === 'dark';
@@ -155,6 +177,34 @@
 
       document.getElementById('modalTitle').textContent = book.title;
       document.getElementById('modalAuthor').textContent = `By ${book.author} (${book.year})`;
+
+      // Set Cover Image (Medium size)
+      const coverImg = document.getElementById('modalCover');
+      coverImg.src = book.coverId 
+        ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg` 
+        : 'https://via.placeholder.com/80x120?text=No+Cover';
+
+      // Load Summary from Open Library Works API
+      const summaryEl = document.getElementById('modalSummary');
+      summaryEl.textContent = "Loading summary from Open Library...";
+
+      if (book.workKey) {
+        try {
+          const res = await fetch(`https://openlibrary.org${book.workKey}.json`);
+          const workData = await res.json();
+          if (workData.description) {
+            summaryEl.textContent = typeof workData.description === 'string' 
+              ? workData.description 
+              : workData.description.value;
+          } else {
+            summaryEl.textContent = "No detailed summary available for this title in Open Library.";
+          }
+        } catch (e) {
+          summaryEl.textContent = "Could not load summary at this time.";
+        }
+      } else {
+        summaryEl.textContent = "Summary not available.";
+      }
 
       const badge = document.getElementById('modalStatusBadge');
       const borrowBtn = document.getElementById('modalBorrowBtn');
@@ -190,7 +240,6 @@
       const books = getBorrowedBooks();
       const memberName = localStorage.getItem('abts_user_name') || 'Josecontreiras';
 
-      // Set due date 14 days from today
       const due = new Date();
       due.setDate(due.getDate() + 14);
       const formattedDue = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -204,11 +253,9 @@
       });
 
       localStorage.setItem('abts_borrowed_books', JSON.stringify(books));
-      console.log(`Book borrowed by ${memberName}:`, selectedBook.title);
-
       closeBookModal();
-      alert(`"${selectedBook.title}" has been borrowed! It now appears on your Home screen and the Admin Web Dashboard.`);
-      fetchLibraryAPI(); // Refresh list badges immediately
+      alert(`"${selectedBook.title}" has been borrowed successfully!`);
+      fetchLibraryAPI();
     }
 
     function handleSearchKey(e) {
@@ -216,7 +263,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      getBorrowedBooks(); // Ensure default state is initialized
+      getBorrowedBooks();
       if (localStorage.getItem('abts_theme') === 'dark') {
         document.body.style.backgroundColor = "#0f172a";
         document.body.style.color = "#f8fafc";

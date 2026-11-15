@@ -136,14 +136,23 @@
       document.getElementById('desktop-id-name').textContent = name;
       document.getElementById('desktop-id-code').textContent = `ID: M-${email.substring(0, 4).toUpperCase()}-2026`;
 
-      // 1. Render Active Borrowed Books on Dashboard
+      // 1. Render Active Borrowed Books on Dashboard with Cover Thumbnails
       const borrowedContainer = document.getElementById('admin-borrowed-list');
-      borrowedContainer.innerHTML = borrowedBooks.map(book => `
-        <div class="carousel-card" style="padding: 16px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff;">
-          <h4>${book.title}</h4>
-          <p style="color: #64748b; font-size: 0.88rem;">${book.author} • Borrowed by <strong>${book.borrowedBy || name}</strong> • Due ${book.dueDate}</p>
-        </div>
-      `).join('');
+      borrowedContainer.innerHTML = borrowedBooks.map(book => {
+        const coverUrl = book.coverId 
+          ? `https://covers.openlibrary.org/b/id/${book.coverId}-S.jpg` 
+          : 'https://via.placeholder.com/45x65?text=No+Cover';
+
+        return `
+          <div class="carousel-card" style="padding: 14px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; display: flex; gap: 14px; align-items: center;">
+            <img src="${coverUrl}" alt="Cover" style="width: 45px; height: 65px; object-fit: cover; border-radius: 4px; border: 1px solid #cbd5e1;" />
+            <div style="flex: 1;">
+              <h4 style="font-size: 1rem; margin-bottom: 2px;">${book.title}</h4>
+              <p style="color: #64748b; font-size: 0.84rem;">${book.author || 'Unknown Author'} • Borrowed by <strong>${book.borrowedBy || name}</strong> • Due ${book.dueDate}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
 
       // 2. Render Members Table with Borrowed Books Summary
       const bookTitles = borrowedBooks.map(b => b.title).join(', ');
@@ -167,7 +176,7 @@
         </tr>
       `;
 
-      // 3. Render Catalog Table (Merges Borrowed Books + Available Library Stock)
+      // 3. Render Catalog Table
       const baseCatalog = [
         { title: "The Great Gatsby", author: "F. Scott Fitzgerald" },
         { title: "Pride and Prejudice", author: "Jane Austen" },
@@ -178,7 +187,7 @@
       const borrowedRows = borrowedBooks.map(b => `
         <tr>
           <td><strong>${b.title}</strong></td>
-          <td>${b.author}</td>
+          <td>${b.author || 'Unknown'}</td>
           <td>${b.borrowedBy || name}</td>
           <td><span style="color: #e67e22; font-weight: bold;">Checked Out (Due ${b.dueDate})</span></td>
         </tr>
