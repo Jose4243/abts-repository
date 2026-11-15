@@ -7,48 +7,37 @@
   <link rel="stylesheet" href="../css/mobile.css">
   
   <script>
+    // Auth Guard: Redirect to login if unauthenticated
     if (localStorage.getItem('abts_authenticated') !== 'true') {
       window.location.href = 'login.html';
     }
   </script>
 </head>
 <body>
-  <header class="greeting-banner">
-    <h2 id="user-greeting">Hello, User 👋</h2>
-    <p id="user-id-display">Member ID: M-1001 | Kensington Branch</p>
+  <!-- Header Greeting Banner -->
+  <header class="greeting-banner" style="padding: 20px; background: #065a82; color: #fff;">
+    <h2 id="user-greeting" style="font-size: 1.3rem; margin-bottom: 4px;">Hello, Member 👋</h2>
+    <p id="user-meta" style="font-size: 0.85srem; opacity: 0.9;">Member ID: M-1001 | Kensington Branch</p>
   </header>
 
-  <main class="mobile-content">
-    <section class="search-section">
-      <div class="quick-search">
-        <input type="text" id="catalog-search" placeholder="🔍 Quick search catalog by title, author, or ISBN..." aria-label="Search catalog">
+  <main class="mobile-content" style="padding: 16px; padding-bottom: 80px;">
+    <!-- Quick Search Shortcut Bar -->
+    <section class="search-section" style="margin-bottom: 20px;">
+      <div class="quick-search" onclick="window.location.href='search.html'" style="cursor: pointer; display: flex; align-items: center; padding: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; color: #64748b;">
+        <span>🔍 Quick search catalog by title, author, or ISBN...</span>
       </div>
     </section>
 
+    <!-- Active Borrowed Books Section (Dynamically Synced) -->
     <section class="section-block">
-      <h3>Active Borrowed Books</h3>
-      <div class="carousel-container">
-        <article class="carousel-card">
-          <h4>1984</h4>
-          <p class="author">George Orwell</p>
-          <p class="due-info">Due in 2 Days (Sep 5, 2026)</p>
-          <div class="progress-bar-container">
-            <div class="progress-bar warning" style="width: 85%;"></div>
-          </div>
-        </article>
-
-        <article class="carousel-card">
-          <h4>To Kill a Mockingbird</h4>
-          <p class="author">Harper Lee</p>
-          <p class="due-info">Due in 10 Days (Sep 13, 2026)</p>
-          <div class="progress-bar-container">
-            <div class="progress-bar safe" style="width: 30%;"></div>
-          </div>
-        </article>
+      <h3 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 12px;">Active Borrowed Books</h3>
+      <div id="mobile-borrowed-list" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Dynamically injected borrowed books appear here -->
       </div>
     </section>
   </main>
 
+  <!-- Persistent 4-Item Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item active">
       <span class="nav-icon">🏠</span>
@@ -69,25 +58,63 @@
   </nav>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const listContainer = document.getElementById('mobile-borrowed-list');
-    if (!listContainer) return;
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Load User Profile Info
+      const userName = localStorage.getItem('abts_user_name') || 'Josecontreiras';
+      const userEmail = localStorage.getItem('abts_user_email') || 'josecontreiras14@gmail.com';
+      
+      const greetingEl = document.getElementById('user-greeting');
+      const metaEl = document.getElementById('user-meta');
+      
+      if (greetingEl) greetingEl.textContent = `Hello, ${userName} 👋`;
+      if (metaEl) metaEl.textContent = `Account: ${userEmail} | Kensington Branch`;
 
-    const isDark = localStorage.getItem('abts_theme') === 'dark';
-    const stored = localStorage.getItem('abts_borrowed_books');
-    const books = stored ? JSON.parse(stored) : [
-      { title: "1984", author: "George Orwell", dueDate: "Nov 29, 2026" },
-      { title: "To Kill a Mockingbird", author: "Harper Lee", dueDate: "Dec 5, 2026" }
-    ];
+      // 2. Load and Render Borrowed Books from localStorage
+      const listContainer = document.getElementById('mobile-borrowed-list');
+      const isDark = localStorage.getItem('abts_theme') === 'dark';
+      const stored = localStorage.getItem('abts_borrowed_books');
 
-    listContainer.innerHTML = books.map(book => `
-      <article class="carousel-card" style="padding: 14px; border-radius: 8px; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; background: ${isDark ? '#1e293b' : '#ffffff'}; margin-bottom: 10px;">
-        <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'};">${book.title}</h4>
-        <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.85rem;">${book.author}</p>
-        <p class="due-info" style="color: #e67e22; font-size: 0.82rem; font-weight: bold; margin-top: 4px;">Status: Borrowed • Due ${book.dueDate}</p>
-      </article>
-    `).join('');
-  });
-</script>
+      // Default fallback books if none exist yet
+      const books = stored ? JSON.parse(stored) : [
+        { title: "1984", author: "George Orwell", dueDate: "Sep 5, 2026" },
+        { title: "To Kill a Mockingbird", author: "Harper Lee", dueDate: "Sep 13, 2026" }
+      ];
+
+      if (listContainer) {
+        listContainer.innerHTML = books.map(book => `
+          <article class="carousel-card" style="padding: 16px; border-radius: 8px; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; background: ${isDark ? '#1e293b' : '#ffffff'}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'}; font-size: 1.05rem; margin-bottom: 4px;">${book.title}</h4>
+            <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.88rem;">Author: ${book.author || 'Unknown'}</p>
+            <p class="due-info" style="color: #27ae60; font-size: 0.82rem; font-weight: bold; margin-top: 6px;">Status: Borrowed • Due ${book.dueDate || 'In 14 Days'}</p>
+          </article>
+        `).join('');
+      }
+
+      // 3. Apply Dark Mode if active
+      if (isDark) {
+        document.body.style.backgroundColor = "#0f172a";
+        document.body.style.color = "#f8fafc";
+        
+        const banner = document.querySelector('.greeting-banner');
+        if (banner) banner.style.backgroundColor = "#1e293b";
+
+        const searchBar = document.querySelector('.quick-search');
+        if (searchBar) {
+          searchBar.style.backgroundColor = "#1e293b";
+          searchBar.style.color = "#f8fafc";
+          searchBar.style.borderColor = "#334155";
+        }
+
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+          nav.style.backgroundColor = "#1e293b";
+          nav.style.borderColor = "#334155";
+        }
+
+        const headings = document.querySelectorAll('h3');
+        headings.forEach(h => h.style.color = "#f8fafc");
+      }
+    });
+  </script>
 </body>
 </html>
