@@ -31,8 +31,10 @@
     <!-- Search Results Container -->
     <section class="section-block">
       <h3>API Search Results</h3>
+      <!-- Moved status message outside resultsContainer so it never gets deleted -->
+      <p class="author" id="api-status" style="margin-top: 6px;">Type a book title above and click Query to fetch live records via REST API.</p>
+      
       <div id="resultsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-        <p class="author" id="api-status">Type a book title above and click Query to fetch live records via REST API.</p>
       </div>
     </section>
   </main>
@@ -63,21 +65,26 @@
       const query = document.getElementById('catalogInput').value.trim();
       const container = document.getElementById('resultsContainer');
       const status = document.getElementById('api-status');
+      const isDark = localStorage.getItem('abts_theme') === 'dark';
 
       if (!query) {
         alert("Please enter a search term for the live API query.");
         return;
       }
 
-      status.textContent = "Connecting to Open Library REST API endpoint...";
+      status.textContent = `Searching Open Library API for "${query}"...`;
       container.innerHTML = "";
 
       try {
-        const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=5`);
+        // Added cache: 'no-store' to ensure fresh results on every consecutive query
+        const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=5`, {
+          cache: 'no-store'
+        });
         const data = await response.json();
 
         if (data.docs && data.docs.length > 0) {
-          status.textContent = `Successfully fetched ${data.docs.length} live records from API.`;
+          status.textContent = `Showing ${data.docs.length} live results for "${query}":`;
+          
           data.docs.forEach(book => {
             const title = book.title || "Unknown Title";
             const author = book.author_name ? book.author_name.join(', ') : "Unknown Author";
@@ -85,16 +92,23 @@
 
             const card = document.createElement('article');
             card.className = "carousel-card";
-            card.style.cssText = "min-width: 100%; padding: 14px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px;";
+            card.style.cssText = `
+              min-width: 100%; 
+              padding: 14px; 
+              background: ${isDark ? '#1e293b' : '#ffffff'}; 
+              color: ${isDark ? '#f8fafc' : '#1e293b'};
+              border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; 
+              border-radius: 8px;
+            `;
             card.innerHTML = `
-              <h4 style="color: #1b3a4b; font-size: 1rem;">${title}</h4>
-              <p class="author" style="color: #64748b; font-size: 0.85rem;">Author: ${author} • First Published: ${year}</p>
+              <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'}; font-size: 1rem;">${title}</h4>
+              <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.85rem;">Author: ${author} • First Published: ${year}</p>
               <p class="due-info" style="color: #27ae60; font-size: 0.8rem; margin-top: 4px;">Status: Available via REST API</p>
             `;
             container.appendChild(card);
           });
         } else {
-          status.textContent = "No books found matching your query.";
+          status.textContent = `No books found matching "${query}".`;
         }
       } catch (error) {
         console.error("API Fetch Error:", error);
