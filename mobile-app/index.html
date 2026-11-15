@@ -17,7 +17,7 @@
   <!-- Header Greeting Banner -->
   <header class="greeting-banner" style="padding: 20px; background: #065a82; color: #fff;">
     <h2 id="user-greeting" style="font-size: 1.3rem; margin-bottom: 4px;">Hello, Member 👋</h2>
-    <p id="user-meta" style="font-size: 0.85srem; opacity: 0.9;">Member ID: M-1001 | Kensington Branch</p>
+    <p id="user-meta" style="font-size: 0.85rem; opacity: 0.9;">Member ID: M-1001 | Kensington Branch</p>
   </header>
 
   <main class="mobile-content" style="padding: 16px; padding-bottom: 80px;">
@@ -28,11 +28,11 @@
       </div>
     </section>
 
-    <!-- Active Borrowed Books Section (Dynamically Synced) -->
+    <!-- Active Borrowed Books Section (Filtered by Current User) -->
     <section class="section-block">
       <h3 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 12px;">Active Borrowed Books</h3>
       <div id="mobile-borrowed-list" style="display: flex; flex-direction: column; gap: 12px;">
-        <!-- Dynamically injected borrowed books appear here -->
+        <!-- Dynamically injected user books or empty state appear here -->
       </div>
     </section>
   </main>
@@ -59,7 +59,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // 1. Load User Profile Info
+      // 1. Load Logged-in User Profile Info
       const userName = localStorage.getItem('abts_user_name') || 'Josecontreiras';
       const userEmail = localStorage.getItem('abts_user_email') || 'josecontreiras14@gmail.com';
       
@@ -69,28 +69,39 @@
       if (greetingEl) greetingEl.textContent = `Hello, ${userName} 👋`;
       if (metaEl) metaEl.textContent = `Account: ${userEmail} | Kensington Branch`;
 
-      // 2. Load and Render Borrowed Books from localStorage
+      // 2. Load and Filter Borrowed Books for THIS specific user only
       const listContainer = document.getElementById('mobile-borrowed-list');
       const isDark = localStorage.getItem('abts_theme') === 'dark';
       const stored = localStorage.getItem('abts_borrowed_books');
-
-      // Default fallback books if none exist yet
-      const books = stored ? JSON.parse(stored) : [
-        { title: "1984", author: "George Orwell", dueDate: "Sep 5, 2026" },
-        { title: "To Kill a Mockingbird", author: "Harper Lee", dueDate: "Sep 13, 2026" }
-      ];
+      
+      const allBooks = stored ? JSON.parse(stored) : [];
+      
+      // Filter books where borrowedBy matches the current user name
+      const userBooks = allBooks.filter(book => 
+        book.borrowedBy && book.borrowedBy.toLowerCase() === userName.toLowerCase()
+      );
 
       if (listContainer) {
-        listContainer.innerHTML = books.map(book => `
-          <article class="carousel-card" style="padding: 16px; border-radius: 8px; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; background: ${isDark ? '#1e293b' : '#ffffff'}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'}; font-size: 1.05rem; margin-bottom: 4px;">${book.title}</h4>
-            <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.88rem;">Author: ${book.author || 'Unknown'}</p>
-            <p class="due-info" style="color: #27ae60; font-size: 0.82rem; font-weight: bold; margin-top: 6px;">Status: Borrowed • Due ${book.dueDate || 'In 14 Days'}</p>
-          </article>
-        `).join('');
+        if (userBooks.length > 0) {
+          listContainer.innerHTML = userBooks.map(book => `
+            <article class="carousel-card" style="padding: 16px; border-radius: 8px; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; background: ${isDark ? '#1e293b' : '#ffffff'}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+              <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'}; font-size: 1.05rem; margin-bottom: 4px;">${book.title}</h4>
+              <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.88rem;">Author: ${book.author || 'Unknown'}</p>
+              <p class="due-info" style="color: #27ae60; font-size: 0.82rem; font-weight: bold; margin-top: 6px;">Status: Borrowed • Due ${book.dueDate || 'In 14 Days'}</p>
+            </article>
+          `).join('');
+        } else {
+          // Clean Empty State when the user has no borrowed books
+          listContainer.innerHTML = `
+            <div style="text-align: center; padding: 30px 20px; background: ${isDark ? '#1e293b' : '#ffffff'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 8px;">
+              <p style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.95rem; margin-bottom: 12px;">No books borrowed yet.</p>
+              <a href="search.html" style="display: inline-block; padding: 10px 18px; background: #065a82; color: #fff; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem;">Click here to search for books</a>
+            </div>
+          `;
+        }
       }
 
-      // 3. Apply Dark Mode if active
+      // 3. Apply Dark Mode styling if active
       if (isDark) {
         document.body.style.backgroundColor = "#0f172a";
         document.body.style.color = "#f8fafc";
