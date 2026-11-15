@@ -118,8 +118,8 @@
       const stored = localStorage.getItem('abts_borrowed_books');
       if (stored) return JSON.parse(stored);
       const defaults = [
-        { title: "1984", author: "George Orwell", year: "1949", dueDate: "Nov 29, 2026", borrowedBy: defaultMember },
-        { title: "To Kill a Mockingbird", author: "Harper Lee", year: "1960", dueDate: "Dec 5, 2026", borrowedBy: defaultMember }
+        { title: "1984", author: "George Orwell", year: "1949", coverId: 7222246, dueDate: "Nov 29, 2026", borrowedBy: defaultMember },
+        { title: "To Kill a Mockingbird", author: "Harper Lee", year: "1960", coverId: 8225264, dueDate: "Dec 5, 2026", borrowedBy: defaultMember }
       ];
       localStorage.setItem('abts_borrowed_books', JSON.stringify(defaults));
       return defaults;
@@ -136,12 +136,29 @@
       document.getElementById('desktop-id-name').textContent = name;
       document.getElementById('desktop-id-code').textContent = `ID: M-${email.substring(0, 4).toUpperCase()}-2026`;
 
-      // 1. Render Active Borrowed Books on Dashboard with Cover Thumbnails
+      // 1. Render Active Borrowed Books on Dashboard with Comprehensive Cover Fallbacks
       const borrowedContainer = document.getElementById('admin-borrowed-list');
       borrowedContainer.innerHTML = borrowedBooks.map(book => {
-        const coverUrl = book.coverId 
-          ? `https://covers.openlibrary.org/b/id/${book.coverId}-S.jpg` 
-          : 'https://via.placeholder.com/45x65?text=No+Cover';
+        let coverUrl = 'https://via.placeholder.com/45x65?text=Book';
+        const t = book.title.toLowerCase();
+
+        if (book.coverId) {
+          coverUrl = `https://covers.openlibrary.org/b/id/${book.coverId}-S.jpg`;
+        } else if (t.includes('harry potter')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/10521200-S.jpg`;
+        } else if (t.includes('1984')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/7222246-S.jpg`;
+        } else if (t.includes('mockingbird')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/8225264-S.jpg`;
+        } else if (t.includes('nightingale')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/12693246-S.jpg`;
+        } else if (t.includes('napoleon of notting hill')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/10103525-S.jpg`;
+        } else if (t.includes('babe')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/8231201-S.jpg`;
+        } else if (t.includes('seduction')) {
+          coverUrl = `https://covers.openlibrary.org/b/id/9312154-S.jpg`;
+        }
 
         return `
           <div class="carousel-card" style="padding: 14px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; display: flex; gap: 14px; align-items: center;">
