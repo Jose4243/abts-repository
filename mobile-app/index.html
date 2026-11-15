@@ -69,42 +69,25 @@
   </nav>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const name = localStorage.getItem('abts_user_name') || 'Jane Doe';
-      const email = localStorage.getItem('abts_user_email') || 'jane.doe@kensington.org';
-      
-      document.getElementById('user-greeting').textContent = `Hello, ${name} 👋`;
-      document.getElementById('user-id-display').textContent = `Account: ${email} | Kensington Branch`;
+  document.addEventListener("DOMContentLoaded", () => {
+    const listContainer = document.getElementById('mobile-borrowed-list');
+    if (!listContainer) return;
 
-      // Apply Theme
-      if (localStorage.getItem('abts_theme') === 'dark') {
-        document.body.style.backgroundColor = "#0f172a";
-        document.body.style.color = "#f8fafc";
-        
-        const header = document.querySelector('.greeting-banner');
-        if (header) header.style.backgroundColor = "#1e293b";
+    const isDark = localStorage.getItem('abts_theme') === 'dark';
+    const stored = localStorage.getItem('abts_borrowed_books');
+    const books = stored ? JSON.parse(stored) : [
+      { title: "1984", author: "George Orwell", dueDate: "Nov 29, 2026" },
+      { title: "To Kill a Mockingbird", author: "Harper Lee", dueDate: "Dec 5, 2026" }
+    ];
 
-        const cards = document.querySelectorAll('.carousel-card');
-        cards.forEach(card => {
-          card.style.backgroundColor = "#1e293b";
-          card.style.color = "#f8fafc";
-          card.style.borderColor = "#334155";
-        });
-
-        const searchInput = document.getElementById('catalog-search');
-        if (searchInput) {
-          searchInput.style.backgroundColor = "#1e293b";
-          searchInput.style.color = "#f8fafc";
-          searchInput.style.borderColor = "#334155";
-        }
-
-        const nav = document.querySelector('.bottom-nav');
-        if (nav) {
-          nav.style.backgroundColor = "#1e293b";
-          nav.style.borderColor = "#334155";
-        }
-      }
-    });
-  </script>
+    listContainer.innerHTML = books.map(book => `
+      <article class="carousel-card" style="padding: 14px; border-radius: 8px; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; background: ${isDark ? '#1e293b' : '#ffffff'}; margin-bottom: 10px;">
+        <h4 style="color: ${isDark ? '#38bdf8' : '#1b3a4b'};">${book.title}</h4>
+        <p class="author" style="color: ${isDark ? '#94a3b8' : '#64748b'}; font-size: 0.85rem;">${book.author}</p>
+        <p class="due-info" style="color: #e67e22; font-size: 0.82rem; font-weight: bold; margin-top: 4px;">Status: Borrowed • Due ${book.dueDate}</p>
+      </article>
+    `).join('');
+  });
+</script>
 </body>
 </html>
